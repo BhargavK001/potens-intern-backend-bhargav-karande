@@ -8,11 +8,16 @@ export interface CreateLogInput {
   payload: JsonValue;
 }
 
+export type VerificationFailureReason =
+  | 'HASH_MISMATCH'
+  | 'PREVIOUS_HASH_MISMATCH';
+
 export interface VerificationResult {
   status: 'PASS' | 'FAIL';
   entriesChecked: number;
   brokenEntryId: string | null;
-  reason?: string;
+  reason?: VerificationFailureReason | null;
+  verifiedAt: string;
 }
 
 export interface AuditLogQuery {

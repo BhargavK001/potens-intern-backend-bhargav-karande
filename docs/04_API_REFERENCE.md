@@ -303,7 +303,9 @@ Return PASS  Return FAIL (with brokenEntryId & reason)
 ```
 
 ### Business Rules
-* Verification is performed server-side by traversing the entire ledger in ascending chronological order (`createdAt ASC, id ASC`).
+* **Repository Responsibility**: `ChainVerificationService` never sorts records. It relies entirely on the sorting order returned by `AuditLogRepository.findAllChronological()` (`createdAt ASC, id ASC`) which owns ordering.
+* **Fail-Fast Strategy**: Verification terminates immediately after the first detected inconsistency (link break or hash mismatch) instead of scanning the remainder of the ledger.
+* **entriesChecked Definition**: `entriesChecked` represents the number of successfully verified entries *before* the first failure was encountered (e.g. if Entry 1 and Entry 2 are valid, but Entry 3 is invalid, it returns `entriesChecked = 2` and `brokenEntryId = Entry3`).
 * The root record (index 0) must reference `"GENESIS"` as its `previousHash`.
 * Each subsequent record ($i$) must possess a `previousHash` matching record $i-1$'s `hash`.
 * Each record's `hash` must match a newly calculated SHA-256 digest over `previousHash + actor + action + canonical(payload) + createdAt`.

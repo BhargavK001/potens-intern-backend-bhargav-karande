@@ -1,10 +1,14 @@
 import type { Request, Response, NextFunction } from 'express';
 import { LogService } from '../services/LogService.js';
+import { ChainVerificationService } from '../services/ChainVerificationService.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
 
 export class AuditLogController {
-  constructor(private readonly logService: LogService) {}
+  constructor(
+    private readonly logService: LogService,
+    private readonly verificationService: ChainVerificationService
+  ) {}
 
   /**
    * Appends a new immutable audit log entry.
@@ -81,6 +85,24 @@ export class AuditLogController {
         res,
         logEntry,
         'Audit log retrieved successfully',
+        200
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Triggers ledger chain integrity verification.
+   * Returns HTTP 200 OK with success flag and verification metadata.
+   */
+  async verify(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await this.verificationService.verify();
+      ApiResponse.success(
+        res,
+        result,
+        'Audit log verification completed',
         200
       );
     } catch (error) {
