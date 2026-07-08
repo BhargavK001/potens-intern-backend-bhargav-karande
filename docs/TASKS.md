@@ -34,6 +34,7 @@ This document tracks the incremental progress of the **Tamper-Evident Append-Onl
 - [x] Configure CORS policy origin checks
 - [x] Configure Rate Limiter for write endpoints (`POST /api/v1/log`)
 - [x] Implement centralized Express error handler middleware
+- [x] Implement request validation middleware & Zod schemas (Milestone 5A)
 
 ### Phase 5 — Business Logic & Cryptographic Engine
 - [x] Implement deterministic canonical JSON payload sorting (`canonicalize` / `serializePayload`)

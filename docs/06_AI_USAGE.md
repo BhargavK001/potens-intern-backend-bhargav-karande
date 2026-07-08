@@ -85,3 +85,15 @@ This document records the interactions and usage of AI tools (specifically Antig
     *   Verified strict TypeScript type safety (`npx tsc --noEmit`) and updated documentation ledgers.
 *   **AI Prompt / Instructions**: User requested implementation of Milestone 4C (`LogService`), changing schema column `previousHash` to VARCHAR(64), encapsulating transactions within the service layer, and updating documentation.
 *   **Engineering Rationale**: Maintained transaction boundaries inside `LogService.create` to ensure sequential consistency when extending the audit log chain. Ensured a single `Date` instance is generated before serialization/hashing and persisted to database to guarantee exact timestamp parity for cryptographic verification.
+
+### Session 8: 2026-07-08
+*   **Tasks Conducted**:
+    *   Formulated Milestone 5A implementation plan for the Request Validation Layer.
+    *   Created Zod schema in `backend/src/schemas/auditLog.schema.ts` to validate creation fields: actor, action, and payload. Set strict rules on string formats, character lengths, and explicit object refinements to reject arrays and null values.
+    *   Programmed reusable validation middleware in `backend/src/middleware/validate.ts` supporting validation of request body, query, and params. Replaced request fields with validated Zod outputs on success.
+    *   Mapped Zod errors to centralized `ApiError` format (status 400, code `VALIDATION_ERROR`) and propagated failures via `next()`.
+    *   Verified schemas and middleware behavior using temporary test script verifying happy paths, empty parameters, null/array properties, unexpected keys, and error conversions.
+    *   Ensured full TypeScript type compilation check (`npx tsc --noEmit`) and removed temporary verification files.
+    *   Updated TASKS trackers, system architecture schemas mapping, and AI usage ledger logs.
+*   **AI Prompt / Instructions**: User requested implementation of Milestone 5A request validation layer without permanent test dependencies, including reusable middleware, Zod schemas, payload structure refinements, error mapping, and updating files documentation.
+*   **Engineering Rationale**: Implemented payload refinement verification specifically checking type is object, not null, and not an array, matching the exact boundary constraints. Cast route parameter and query outputs to `any` inside the generic middleware to conform with Express typings without compile-time complaints. Used direct truthiness assertions in verification scripts to bypass compiler literal type-narrowing warnings.

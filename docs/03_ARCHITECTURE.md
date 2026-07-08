@@ -109,7 +109,7 @@ backend/src/
 ├── services/        # Cryptographic hashing, sequential verification, & export logic
 ├── types/           # Shared TypeScript interfaces, DTOs, & error types
 ├── utils/           # Canonical JSON stringifier & SHA-256 hashing helper
-├── validators/      # Zod validation schemas for request bodies & query params
+├── schemas/         # Zod validation schemas (e.g. auditLog.schema.ts)
 └── server.ts        # Application bootstrap & graceful shutdown handler
 ```
 **Why this structure matters:** Isolating `repositories/` allows swapping the database engine without changing `services/`. Isolating `controllers/` allows testing domain services via automated test runners or worker queues without mocking HTTP request objects.
@@ -135,7 +135,7 @@ frontend/src/
 | **Controllers** | Orchestrate the HTTP request/response lifecycle. | Extract typed DTOs from `req`; invoke services; return standardized JSON. | Compute SHA-256 hashes; construct SQL/Prisma queries; handle raw errors. |
 | **Services** | Enforce business rules and cryptographic integrity. | Fetch `previousHash`; compute SHA-256; execute verification loop. | Access `req`/`res` objects; execute raw DB queries without repositories. |
 | **Repositories** | Abstract database persistence and queries. | Execute `create`, `findMany`, and `$transaction` via Prisma. | Implement `update` or `delete`; include business validation or auth logic. |
-| **Validators** | Guarantee runtime type safety at the system boundary. | Validate string lengths, JSONB structures, and date query formats. | Query database for validation; execute domain state transformations. |
+| **Schemas** | Guarantee runtime type safety at the system boundary. | Validate string lengths, JSONB structures, and date query formats. | Query database for validation; execute domain state transformations. |
 | **Middleware** | Intercept requests for security, logging, and errors. | Check `X-API-Key`; bind `reqId`; catch unhandled errors $\to$ JSON response. | Execute core business logic; swallow exceptions without logging traces. |
 
 ---
