@@ -8,6 +8,7 @@ import { apiKeyAuth } from './middleware/apiKeyAuth.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { ApiResponse } from './utils/apiResponse.js';
+import apiRouter from './routes/index.js';
 
 const app = express();
 
@@ -35,8 +36,8 @@ app.get('/', (req, res) => {
   ApiResponse.success(res, null, 'API is running');
 });
 
-// 7. Apply API Key authentication globally to the versioned API path /api/v1
-app.use('/api/v1', apiKeyAuth);
+// 7. Apply API Key authentication globally and mount API router to /api/v1
+app.use('/api/v1', apiKeyAuth, apiRouter);
 
 // 8. Not Found Router Handler
 app.use(notFoundHandler);
