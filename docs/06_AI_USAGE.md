@@ -1,6 +1,10 @@
-# AI Usage Log
+This document records the interactions and usage of AI tools throughout the development of the **Tamper-Evident Append-Only Audit Log System**.
 
-This document records the interactions and usage of AI tools (specifically Antigravity, a Gemini 3.5-powered agentic coding assistant) throughout the development of the **Tamper-Evident Append-Only Audit Log System**.
+### AI Tools & Workflow
+From the start of the project, a multi-LLM engineering pipeline was utilized for all milestones:
+1. Prompts and implementation plans were generated using **Claude Sonnet** and **Claude Opus**.
+2. Architectural decisions, syntax constraints, and framework configurations were verified via **Perplexity**.
+3. Prompts and approved implement directives were supplied to **Antigravity IDE (Gemini)** to build, compile, and run the code.
 
 ---
 
@@ -109,3 +113,13 @@ This document records the interactions and usage of AI tools (specifically Antig
     *   Updated the Task tracker ledger and AI Session logs.
 *   **AI Prompt / Instructions**: User requested implementation of Milestone 5B: Create Audit Log Endpoint mapping dependencies once at route startup, enforcing thin controllers, versioned routing mapped to app.ts, using existing Response Helper, executing in correct pipeline sequence, verifying database persistence and preceding hash linking, compiling typescript, and logging AI actions.
 *   **Engineering Rationale**: Bound the controller methods using arrow functions inside routes to preserve instance `this` contexts. Implemented a zero-dependency local network verification script using Node's native `http.createServer` and global `fetch` API, enabling integration checks against the database without installing extra npm devDependencies.
+
+### Session 10: 2026-07-08
+*   **Tasks Conducted**:
+    *   Implemented collection and single-resource retrieval endpoints (`GET /api/v1/logs` and `GET /api/v1/logs/:id`) using Zod schemas for query/parameter validation. Added `getAll` and `getById` handlers to `AuditLogController` and updated `LogService`.
+    *   Implemented cryptographic chain verification service (`ChainVerificationService.ts` and `GET /api/v1/verify` endpoint) running in $O(n)$ time and $O(1)$ memory. Sequentially validates hash links, recomputes canonical hashes, and halts on the first mismatch, providing diagnostic counts.
+    *   Implemented administrative log export endpoints (`GET /api/v1/export`) supporting CSV and JSON formats. Integrated spreadsheet formula injection protection, UTF-8 BOM prefixes, safe Windows filenames, and custom data formats in `ExportService.ts`.
+    *   Implemented a permanent automated integration test suite using **Vitest** and **Supertest** inside `backend/src/tests/` running against an isolated PostgreSQL test database (`potens_audit_log_test`). Wrote helper utilities and 35 comprehensive test cases verifying validation, auth, CRUD, verification, exports, and test independence.
+*   **AI Prompt / Instructions**: User requested implementation of read endpoints, verification logic, exports (JSON/CSV with BOM/injection escaping/safe filenames), and an automated test suite (Vitest + Supertest, isolated test DB, modular helpers, endpoint-based seeding, duplicate hash assertions).
+*   **Engineering Rationale**: Implemented database isolation during tests by overriding connection parameters conditionally when `NODE_ENV === 'test'`. Suppressed request logging noise during testing. Avoided concurrent database conflicts by forcing Vitest to execute sequentially. Designed `ExportService` to prevent Excel formula execution by prefixing `=, +, -, @` cells with single quotes.
+
