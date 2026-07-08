@@ -22,18 +22,18 @@ This document tracks the incremental progress of the **Tamper-Evident Append-Onl
 - [x] Setup environment variables template (`.env.example`)
 
 ### Phase 3 — Database & Storage
-- [ ] Configure PostgreSQL database connection
-- [ ] Initialize Prisma ORM client
-- [ ] Design Prisma schema with `LogEntry` model & indexing rules
-- [ ] Generate and apply database migrations
+- [x] Configure PostgreSQL database connection
+- [x] Initialize Prisma ORM client
+- [x] Design Prisma schema with `LogEntry` model & indexing rules
+- [x] Generate and apply database migrations
 
 ### Phase 4 — Core Infrastructure Middleware
 - [ ] Implement `X-API-Key` authentication middleware
-- [ ] Setup Pino structured logging middleware (request tracking, timing, error logs)
-- [ ] Setup Helmet for security header hardening
-- [ ] Configure CORS policy origin checks
-- [ ] Configure Rate Limiter for write endpoints (`POST /api/v1/log`)
-- [ ] Implement centralized Express error handler middleware
+- [x] Setup Pino structured logging middleware (request tracking, timing, error logs)
+- [x] Setup Helmet for security header hardening
+- [x] Configure CORS policy origin checks
+- [x] Configure Rate Limiter for write endpoints (`POST /api/v1/log`)
+- [x] Implement centralized Express error handler middleware
 
 ### Phase 5 — Business Logic & Cryptographic Engine
 - [ ] Implement deterministic canonical JSON payload sorting (`canonicalize`)
