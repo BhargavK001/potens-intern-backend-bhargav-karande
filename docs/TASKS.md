@@ -38,7 +38,7 @@ This document tracks the incremental progress of the **Tamper-Evident Append-Onl
 ### Phase 5 — Business Logic & Cryptographic Engine
 - [x] Implement deterministic canonical JSON payload sorting (`canonicalize` / `serializePayload`)
 - [x] Build SHA-256 hash generator helper (`computeLogHash`)
-- [ ] Implement `LogRepository` (strictly append-only DB operations with row tail locking)
+- [x] Implement `LogRepository` / `AuditLogRepository` (strictly append-only persistence layer)
 - [ ] Build `LogService` to orchestrate hashing & chain verification
 - [ ] Implement `POST /api/v1/log` (Create Log Entry)
 - [ ] Implement `GET /api/v1/log/:id` (Retrieve Single Log)
