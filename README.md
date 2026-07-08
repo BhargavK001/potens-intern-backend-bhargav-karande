@@ -284,38 +284,64 @@ The administrative dashboard provides a visual interface to interact with the le
 ## Screenshots
 
 ### Dashboard
-![Dashboard Placeholder](docs/images/dashboard.png)
+![Dashboard](docs/screenshots/dashboard.png.png)
 
 ### Create
-![Create Placeholder](docs/images/create.png)
+![Create Log](docs/screenshots/create-log.png.png)
 
 ### Logs
-![Logs Placeholder](docs/images/logs.png)
+![Logs](docs/screenshots/logs.png.png)
 
 ### Verify
-![Verify Placeholder](docs/images/verify.png)
+![Verify](docs/screenshots/verify.png.png)
 
 ### Export
-![Export Placeholder](docs/images/export.png)
+![Export](docs/screenshots/export.png.png)
 
-## Future Improvements
+## Design Decisions
+
+- **Strict Layered Architecture:** The application enforces a strict separation between controllers, services, and repositories to ensure business logic is isolated and testable.
+- **Append-Only Database Operations:** Prisma is configured without any `update` or `delete` operations in the repositories to enforce the ledger's immutability at the application level.
+- **Cryptographic Hashing Algorithm:** SHA-256 was selected for its balance of security and performance.
+- **Client-Side vs Server-Side Validation:** Zod is used on both the frontend and backend to guarantee that invalid or malformed data never reaches the business logic or database.
+
+## Assumptions
+
+- The underlying PostgreSQL database is secured and cannot be directly manipulated by unauthorized users bypassing the application layer.
+- The `API_KEY` is securely distributed to authorized clients only.
+- The chronological ordering of events is primarily determined by the database's sequential processing and the internal `createdAt` timestamp.
+
+## Limitations
+
+- The current hashing mechanism verifies the integrity of the chain chronologically. Extremely large ledgers may take significant time to verify from the genesis block without implementing snapshotting or pagination.
+- Concurrent heavy write operations might experience slight bottlenecks due to the requirement of calculating hashes sequentially based on the most recent `previousHash`.
+
+## What is Broken or Unfinished
+
+The core requirements (tamper-evident hash chaining, API endpoints, testing, frontend) are fully functional and robust.
+
+However, the following optional stretch goals were not attempted/finished:
+- **Merkle-tree style batching:** Not implemented. The current `/verify` endpoint scans the ledger chronologically. For very large datasets, this linear verification would need to be upgraded to a Merkle tree structure.
+- **Docker Compose:** While the app runs easily via `npm run dev`, a `docker-compose.yml` was not included in this iteration.
+- **CLI Command (`npm run verify`):** The verification logic is currently bound to the Express service and Next.js frontend, but not exposed as an isolated CLI command.
+
+## What I Would Build Next (Future Improvements)
 
 - **Pagination:** Implement cursor-based pagination for the retrieval endpoints to handle massive ledgers efficiently.
 - **Streaming CSV exports:** Refactor the export endpoint to stream data directly from the database to the client, reducing memory overhead for large datasets.
-- **Docker:** Containerize the application and database for simplified deployment and environment consistency.
 - **JWT Authentication:** Migrate from static API keys to token-based authentication for granular user identification.
 - **Role Based Access:** Implement authorization layers to restrict certain actions based on user roles.
-- **OpenAPI Documentation:** Integrate Swagger or a similar tool to auto-generate and host interactive API documentation.
-- **Cloud Deployment:** Configure CI/CD pipelines and deploy the architecture to scalable cloud infrastructure.
 
 ## Author
 
 **Bhargav Karande**
 
-- GitHub: [bhargav-karande](https://github.com/bhargav-karande)
-- LinkedIn: [Bhargav Karande](https://www.linkedin.com/in/bhargav-karande)
-- Portfolio: [bhargav-karande.com](https://bhargav-karande.com)
+- GitHub: [BhargavK001](https://github.com/BhargavK001)
+- LinkedIn: [Bhargav Karande](https://www.linkedin.com/in/bhargav-karande/)
+- Portfolio: [bhargav-karande.com](https://bhargavkarande.dev)
 
-## License
+## AI Use Log
 
-MIT
+- **Tool:** Google DeepMind IDE Agent
+- **Message Count:** ~60 iterations
+- **Usage:** Used to architect the backend application layers, write the Next.js frontend components, generate the Vitest automated testing suite, and structure the documentation files.
