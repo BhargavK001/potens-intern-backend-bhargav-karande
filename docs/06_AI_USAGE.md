@@ -53,3 +53,15 @@ This document records the interactions and usage of AI tools (specifically Antig
     *   Updated task tracking ledgers [docs/TASKS.md](file:///c:/Users/Lenovo/Documents/GitHub/potens-intern-backend-bhargav-karande/docs/TASKS.md) and execution history walkthroughs.
 *   **AI Prompt / Instructions**: User requested implementation of timing-safe API key validation on all versioned routes as Phase 3B.
 *   **Engineering Rationale**: Implemented SHA-256 hashing on both client and server keys prior to utilizing `crypto.timingSafeEqual()` comparison. This standardizes length buffers, resolving potential timing attack leakage vectors and preventing runtime crashes due to key length differences.
+
+### Session 5: 2026-07-08
+*   **Tasks Conducted**:
+    *   Formulated Milestone 4A implementation plan focusing purely on shared primitives (Prisma singleton, domain types, Hash utility).
+    *   Instantiated global PrismaClient singleton in `src/lib/prisma.ts` with conditional logs settings (query/warn/error logs in dev, only errors in prod).
+    *   Defined strongly-typed domain structures (`CreateLogInput`, `VerificationResult`, `ExportFilters` utilising Prisma's standard `JsonValue` inputs) in `src/types/log.ts`.
+    *   Programmed deterministic key-sorting payload serialization and lowercase 64-char hexadecimal SHA-256 hash generators in `src/lib/hash.ts`.
+    *   Verified compiler type safety checks (`npx tsc --noEmit`) and verified cryptographic primitives using temporary execution script checking determinism, nesting, lists, and formatting.
+    *   Cleaned temporary verification assets and updated Tasks log templates.
+*   **AI Prompt / Instructions**: User requested split of Milestone 4, refactoring HashService to lib/hash.ts, mapping payload strictly to JsonValue, ensuring hash outputs are lowercase 64-character hex format, and updating AI logs.
+*   **Engineering Rationale**: Constructed a recursive serialization processor to sort JSON object properties alphabetically. This guarantees signature consistency for client objects with varying key insertion orders. Cached the database client in Node's global object scope in dev mode to prevent database connection leakage during compilation restarts.
+

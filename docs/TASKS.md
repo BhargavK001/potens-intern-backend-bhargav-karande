@@ -28,7 +28,7 @@ This document tracks the incremental progress of the **Tamper-Evident Append-Onl
 - [x] Generate and apply database migrations
 
 ### Phase 4 — Core Infrastructure Middleware
-- [ ] Implement `X-API-Key` authentication middleware
+- [x] Implement `X-API-Key` authentication middleware
 - [x] Setup Pino structured logging middleware (request tracking, timing, error logs)
 - [x] Setup Helmet for security header hardening
 - [x] Configure CORS policy origin checks
@@ -36,8 +36,8 @@ This document tracks the incremental progress of the **Tamper-Evident Append-Onl
 - [x] Implement centralized Express error handler middleware
 
 ### Phase 5 — Business Logic & Cryptographic Engine
-- [ ] Implement deterministic canonical JSON payload sorting (`canonicalize`)
-- [ ] Build SHA-256 hash generator helper
+- [x] Implement deterministic canonical JSON payload sorting (`canonicalize` / `serializePayload`)
+- [x] Build SHA-256 hash generator helper (`computeLogHash`)
 - [ ] Implement `LogRepository` (strictly append-only DB operations with row tail locking)
 - [ ] Build `LogService` to orchestrate hashing & chain verification
 - [ ] Implement `POST /api/v1/log` (Create Log Entry)
