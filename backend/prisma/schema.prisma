@@ -14,7 +14,7 @@ model LogEntry {
   actor        String   @db.VarChar(100)
   action       String   @db.VarChar(100)
   payload      Json     @db.JsonB
-  previousHash String   @db.Char(64)
+  previousHash String   @db.VarChar(64)
   hash         String   @unique @db.Char(64)
   createdAt    DateTime @default(now()) @db.Timestamptz(6)
 

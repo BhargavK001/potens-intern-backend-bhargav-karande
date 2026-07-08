@@ -39,7 +39,7 @@ This document tracks the incremental progress of the **Tamper-Evident Append-Onl
 - [x] Implement deterministic canonical JSON payload sorting (`canonicalize` / `serializePayload`)
 - [x] Build SHA-256 hash generator helper (`computeLogHash`)
 - [x] Implement `LogRepository` / `AuditLogRepository` (strictly append-only persistence layer)
-- [ ] Build `LogService` to orchestrate hashing & chain verification
+- [x] Build `LogService` to orchestrate hashing & chain verification
 - [ ] Implement `POST /api/v1/log` (Create Log Entry)
 - [ ] Implement `GET /api/v1/log/:id` (Retrieve Single Log)
 - [ ] Implement `GET /api/v1/verify` (Ledger Hash Chain Verification)
