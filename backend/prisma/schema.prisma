@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model LogEntry {
+  id           String   @id @default(uuid()) @db.Uuid
+  actor        String   @db.VarChar(100)
+  action       String   @db.VarChar(100)
+  payload      Json     @db.JsonB
+  previousHash String   @db.Char(64)
+  hash         String   @unique @db.Char(64)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([actor])
+  @@index([createdAt])
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+
+  @@map("log_entries")
+}
