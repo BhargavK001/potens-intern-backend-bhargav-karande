@@ -37,3 +37,16 @@ export const getAuditLogsQuerySchema = z.object({
 export const getAuditLogParamsSchema = z.object({
   id: z.string().uuid({ message: 'id must be a valid UUID v4' }),
 }).strict();
+
+export const exportAuditLogsQuerySchema = z.object({
+  actor: z.string().trim().min(1, 'actor cannot be empty').optional(),
+  startDate: z.string().refine(
+    (val) => !isNaN(Date.parse(val)),
+    { message: 'startDate must be a valid date string' }
+  ).optional(),
+  endDate: z.string().refine(
+    (val) => !isNaN(Date.parse(val)),
+    { message: 'endDate must be a valid date string' }
+  ).optional(),
+  format: z.enum(['csv', 'json']).default('json').optional(),
+}).strict();

@@ -25,3 +25,9 @@ export interface AuditLogQuery {
   startDate?: string;
   endDate?: string;
 }
+
+export interface ExportResult {
+  content: string;
+  contentType: string;
+  filename: string;
+}

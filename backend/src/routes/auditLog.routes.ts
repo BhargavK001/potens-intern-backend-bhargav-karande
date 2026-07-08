@@ -3,8 +3,9 @@ import { AuditLogRepository } from '../repositories/AuditLogRepository.js';
 import { LogService } from '../services/LogService.js';
 import { AuditLogController } from '../controllers/AuditLogController.js';
 import { ChainVerificationService } from '../services/ChainVerificationService.js';
+import { ExportService } from '../services/ExportService.js';
 import { validate } from '../middleware/validate.js';
-import { createAuditLogSchema, getAuditLogsQuerySchema, getAuditLogParamsSchema } from '../schemas/auditLog.schema.js';
+import { createAuditLogSchema, getAuditLogsQuerySchema, getAuditLogParamsSchema, exportAuditLogsQuerySchema } from '../schemas/auditLog.schema.js';
 
 const router = Router();
 
@@ -12,7 +13,8 @@ const router = Router();
 const auditLogRepository = new AuditLogRepository();
 const logService = new LogService(auditLogRepository);
 const chainVerificationService = new ChainVerificationService(auditLogRepository);
-const auditLogController = new AuditLogController(logService, chainVerificationService);
+const exportService = new ExportService(auditLogRepository);
+const auditLogController = new AuditLogController(logService, chainVerificationService, exportService);
 
 // Map the creation endpoint under the validation middleware boundary (POST /api/v1/log)
 router.post(
@@ -32,6 +34,13 @@ router.get(
 router.get(
   '/verify',
   (req, res, next) => auditLogController.verify(req, res, next)
+);
+
+// Map the administrative log export endpoint (GET /api/v1/export)
+router.get(
+  '/export',
+  validate({ query: exportAuditLogsQuerySchema }),
+  (req, res, next) => auditLogController.export(req, res, next)
 );
 
 // Map the retrieval single resource endpoint (GET /api/v1/logs/:id)

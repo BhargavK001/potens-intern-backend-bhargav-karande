@@ -395,7 +395,7 @@ curl -X GET "http://localhost:3000/api/v1/export?actor=admin&startDate=2026-07-0
       "startDate": "2026-07-01T00:00:00Z"
     },
     "recordCount": 15,
-    "notice": "Administrative export. Filtered subsets omit intermediate ledger rows and cannot be verified independently without the complete historical chain."
+    "notice": "Only a complete chronological export can be fully verified. Filtered exports intentionally omit intermediate chain entries and therefore cannot independently prove ledger integrity."
   },
   "data": [
     {

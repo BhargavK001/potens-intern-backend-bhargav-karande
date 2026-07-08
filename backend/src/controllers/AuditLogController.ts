@@ -1,13 +1,15 @@
 import type { Request, Response, NextFunction } from 'express';
 import { LogService } from '../services/LogService.js';
 import { ChainVerificationService } from '../services/ChainVerificationService.js';
+import { ExportService } from '../services/ExportService.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
 
 export class AuditLogController {
   constructor(
     private readonly logService: LogService,
-    private readonly verificationService: ChainVerificationService
+    private readonly verificationService: ChainVerificationService,
+    private readonly exportService: ExportService
   ) {}
 
   /**
@@ -105,6 +107,27 @@ export class AuditLogController {
         'Audit log verification completed',
         200
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Exports historical audit log entries in CSV or JSON file attachment formats.
+   * Leverages ExportService to construct download payload envelopes.
+   */
+  async export(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { actor, startDate, endDate, format } = req.query as any;
+
+      const result = await this.exportService.exportLogs(
+        { actor, startDate, endDate },
+        format
+      );
+
+      res.setHeader('Content-Type', `${result.contentType}; charset=utf-8`);
+      res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+      res.send(result.content);
     } catch (error) {
       next(error);
     }
