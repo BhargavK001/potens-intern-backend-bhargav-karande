@@ -3,7 +3,7 @@ import type { LogEntry } from '@prisma/client';
 import { prisma as defaultPrisma } from '../lib/prisma.js';
 import { AuditLogRepository } from '../repositories/AuditLogRepository.js';
 import { serializePayload, computeLogHash } from '../lib/hash.js';
-import type { CreateLogInput } from '../types/log.js';
+import type { CreateLogInput, AuditLogQuery } from '../types/log.js';
 
 export class LogService {
   constructor(
@@ -50,6 +50,25 @@ export class LogService {
         tx
       );
     });
+  }
+
+  // ==========================================
+  // READS
+  // ==========================================
+
+  /**
+   * Retrieves all audit log entries, applying optional filters for actor, startDate, and endDate.
+   * Returns records in ascending chronological order (createdAt ASC, id ASC).
+   */
+  async getAll(filters: AuditLogQuery = {}): Promise<LogEntry[]> {
+    return this.repository.findFiltered(filters);
+  }
+
+  /**
+   * Retrieves a single audit log entry by its UUID.
+   */
+  async getById(id: string): Promise<LogEntry | null> {
+    return this.repository.findById(id);
   }
 }
 

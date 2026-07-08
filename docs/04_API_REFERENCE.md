@@ -174,13 +174,13 @@ curl -X POST "http://localhost:3000/api/v1/log" \
 ---
 
 ## 3.2 Retrieve Single Log by ID
-`GET /api/v1/log/:id`
+`GET /api/v1/logs/:id`
 
 Fetches a specific audit log entry by its primary key UUID.
 
 ### Endpoint Execution Flow
 ```
-GET /api/v1/log/:id
+GET /api/v1/logs/:id
 Authenticate
       ↓
 Validate UUID Parameter
@@ -206,7 +206,7 @@ Return 200  Return 404
 
 ### Example cURL Command
 ```bash
-curl -X GET "http://localhost:3000/api/v1/log/7b9b804f-35da-48c0-8260-23a57be11883" \
+curl -X GET "http://localhost:3000/api/v1/logs/7b9b804f-35da-48c0-8260-23a57be11883" \
   -H "X-API-Key: my-secret-api-key"
 ```
 
@@ -237,7 +237,51 @@ curl -X GET "http://localhost:3000/api/v1/log/7b9b804f-35da-48c0-8260-23a57be118
 
 ---
 
-## 3.3 Verify Hash Chain Integrity
+## 3.3 Retrieve All Logs
+`GET /api/v1/logs`
+
+Retrieves all audit log entries, supporting optional filtering by actor and date ranges. Returns records sorted in ascending chronological order (`createdAt ASC, id ASC`).
+
+### Business Rules
+* Read-only retrieval operation.
+* Supports optional query parameters for filtering.
+* If no logs match the filters (or database is empty), returns an empty array `[]` with a `200 OK` status.
+
+### Query Parameters
+| Parameter | Type | Required | Validation Rules |
+| :--- | :--- | :--- | :--- |
+| `actor` | string | ❌ | Optional.<br/>Trim whitespace.<br/>Exact match against stored actor identity. |
+| `startDate` | string | ❌ | Optional.<br/>Must be a valid date string.<br/>Filters records where `createdAt >= startDate`. |
+| `endDate` | string | ❌ | Optional.<br/>Must be a valid date string.<br/>Filters records where `createdAt <= endDate`. |
+
+### Example cURL Command
+```bash
+curl -X GET "http://localhost:3000/api/v1/logs?actor=admin&startDate=2026-07-01T00:00:00Z" \
+  -H "X-API-Key: my-secret-api-key"
+```
+
+### Success Response (`200 OK`)
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "7b9b804f-35da-48c0-8260-23a57be11883",
+      "actor": "admin",
+      "action": "UPDATE_PATIENT_RECORD",
+      "payload": { "patientId": "p-88392" },
+      "previousHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hash": "8f3994bb0f331cfefba852e1850d53c7a7eafe37722d5df4abfdf5eb36d93617",
+      "createdAt": "2026-07-08T01:50:12.341Z"
+    }
+  ],
+  "message": "Audit logs retrieved successfully"
+}
+```
+
+---
+
+## 3.4 Verify Hash Chain Integrity
 `GET /api/v1/verify`
 
 Triggers an immediate chronological verification traversal of the entire database ledger. Recalculates all SHA-256 hashes sequentially from index 0 (`"GENESIS"`) to the current tail. Halts immediately if any historical record has been modified, reordered, or deleted.
@@ -300,7 +344,7 @@ curl -X GET "http://localhost:3000/api/v1/verify" \
 
 ---
 
-## 3.4 Export Filtered Logs
+## 3.5 Export Filtered Logs
 `GET /api/v1/export`
 
 Extracts a structured JSON dump of historical audit records for external administrative review or compliance archiving. Supports optional date range and actor filtering.

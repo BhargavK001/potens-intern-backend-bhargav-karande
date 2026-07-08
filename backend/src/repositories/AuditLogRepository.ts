@@ -1,7 +1,7 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import type { LogEntry } from '@prisma/client';
 import { prisma as defaultPrisma } from '../lib/prisma.js';
-import type { ExportFilters } from '../types/log.js';
+import type { AuditLogQuery } from '../types/log.js';
 
 export class AuditLogRepository {
   private readonly prisma: PrismaClient;
@@ -49,7 +49,7 @@ export class AuditLogRepository {
   }
 
   async findFiltered(
-    filters: ExportFilters,
+    filters: AuditLogQuery,
     client: PrismaClient | Prisma.TransactionClient = this.prisma
   ): Promise<LogEntry[]> {
     const where: Prisma.LogEntryWhereInput = {};

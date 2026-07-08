@@ -15,7 +15,7 @@ export interface VerificationResult {
   reason?: string;
 }
 
-export interface ExportFilters {
+export interface AuditLogQuery {
   actor?: string;
   startDate?: string;
   endDate?: string;
